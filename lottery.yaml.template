@@ -1,0 +1,7 @@
+lotteries:
+  national:
+    jackpot: 5
+    url: https://www.national-lottery.co.uk/games/lotto?icid=home:bd:4:prm-bn:lo:roll2:pl:co
+  euromillions:
+    jackpot: 10
+    url: https://www.national-lottery.co.uk/games/euromillions?icid=home:bd:1:hrp:em:roll3:pl:co

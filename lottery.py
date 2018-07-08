@@ -16,43 +16,26 @@ class WebPage(object):
     def get_page_url(self):
         return
 
-    def readResponseToSoup(self, data):
+    def read_response_to_soup(self, data):
         self.soup = BeautifulSoup(data, "html.parser")
-
-    def openSoup(self, filename):
-        with open(filename, 'r') as soupFile:
-            wbf = soupFile.read()
-            self.soup = BeautifulSoup(wbf, "html.parser")
-
-    def writeSoup(self, filename):
-        with open(filename, 'w') as outFile:
-            outFile.write(str(self.soup))
 
     def get_price(self):
         price_soup = self.soup.find_all('span', {'class': 'amount'})
-        print price_soup
         self.price = str(price_soup[0])
-        self.price = self.price[self.price.index('£')+2 : self.price.index('£')+6].split('<')[0]
+        self.price = self.price[self.price.index('£')+2: self.price.index('£')+6].split('<')[0]
 
 
 def analyse_lotteries(lotteries):
     playable = []
     for lottery in lotteries:
         page = WebPage(name=lottery)
-        page.readResponseToSoup(lotteries[lottery]['data'])
+        page.read_response_to_soup(lotteries[lottery]['data'])
         page.get_price()
         print "Comparing {0} > {1}".format(page.price, lotteries[lottery]['jackpot'])
         if float(page.price) > lotteries[lottery]['jackpot']:
-            string = "The {0} Lottery is above limit £{1}M with a jackpot of £{2}M".format(
+            playable.append("The {0} Lottery is above limit £{1}M with a jackpot of £{2}M".format(
                 lottery, lotteries[lottery]['jackpot'], page.price
-            )
-            print "normal"
-            print string
-            print "utf8"
-            print string.encode("utf8")
-            playable.append(unicode("The {0} Lottery is above limit £{1}M with a jackpot of £{2}M".format(
-                lottery, lotteries[lottery]['jackpot'], page.price
-            )))
+            ))
     return playable
 
 
@@ -84,15 +67,34 @@ def load_lottery(lottery):
     return 1
 
 
+def push_results(playable, config):
+    url = 'https://api.pushed.co/1/push'
+    for msg in playable:
+        payload = {
+            "app_key": config['pushed']['app_key'],
+            "app_secret": config['pushed']['app_secret'],
+            "target_type": "channel",
+            "target_alias": config['pushed']['target_alias'],
+            "content": msg
+        }
+        r = requests.post(url=url, data=payload)
+        print r.text
+
+
 def run():
     config = load_config()
     lotteries = load_lotteries(config)
     if len(lotteries) > 0:
         playable = analyse_lotteries(lotteries)
         print playable
+        push_results(playable=playable, config=config)
     else:
         print "No lotteries found"
         sys.exit(1)
+
+
+def lambda_handler():
+    run()
 
 
 if __name__ == "__main__":
