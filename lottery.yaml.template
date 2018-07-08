@@ -5,3 +5,8 @@ lotteries:
   euromillions:
     jackpot: 10
     url: https://www.national-lottery.co.uk/games/euromillions?icid=home:bd:1:hrp:em:roll3:pl:co
+
+pushed:
+  app_key: app_key_val
+  app_secret: app_secret_val
+  target_alias: target_alias_val
