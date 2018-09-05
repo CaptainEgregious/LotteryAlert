@@ -22,7 +22,7 @@ class WebPage(object):
     def get_price(self):
         price_soup = self.soup.find_all('span', {'class': 'amount'})
         self.price = str(price_soup[0])
-        self.price = self.price[self.price.index('£')+2: self.price.index('£')+6].split('<')[0]
+        self.price = self.price[self.price.index('£')+1: self.price.index('£')+6].split('<')[0]
 
 
 def analyse_lotteries(lotteries):
@@ -31,7 +31,7 @@ def analyse_lotteries(lotteries):
         page = WebPage(name=lottery)
         page.read_response_to_soup(lotteries[lottery]['data'])
         page.get_price()
-        print "Comparing {0} > {1}".format(page.price, lotteries[lottery]['jackpot'])
+        print("Comparing {0} > {1}".format(page.price, lotteries[lottery]['jackpot']))
         if float(page.price) > lotteries[lottery]['jackpot']:
             playable.append("The {0} Lottery is above limit £{1}M with a jackpot of £{2}M".format(
                 lottery, lotteries[lottery]['jackpot'], page.price
@@ -59,11 +59,11 @@ def load_lotteries(config):
 def load_lottery(lottery):
     r = requests.get(lottery['url'])
     if r.status_code < 300:
-        print r.encoding
+        print(r.encoding)
         r.encoding = 'utf8'
-        return r.content
+        return(r.content)
     else:
-        print "[ERROR] Failed accessing lottery page:\n {0}".format(r.content)
+        print("[ERROR] Failed accessing lottery page:\n {0}".format(r.content))
     return 1
 
 
@@ -78,18 +78,17 @@ def push_results(playable, config):
             "content": msg
         }
         r = requests.post(url=url, data=payload)
-        print r.text
-
+        print(r.text)
 
 def run():
     config = load_config()
     lotteries = load_lotteries(config)
     if len(lotteries) > 0:
         playable = analyse_lotteries(lotteries)
-        print playable
+        print(playable)
         push_results(playable=playable, config=config)
     else:
-        print "No lotteries found"
+        print("No lotteries found")
         sys.exit(1)
 
 
