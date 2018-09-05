@@ -15,7 +15,7 @@ To run the lottery analyser, simply run using
 
 ## Configuration
 
-Configuration for this script exists in the lottery.yaml file. Included is a template yaml file for base config.
+Configuration for this script exists in the lottery.yaml file. Included is a template yaml file for base config to create your own config as the actual lottery.yaml is encrypted.
 
 #### Lottery Extraction
 This script expects to recieve the current webpage for the national lottery (UK) and euromillions lotteries and is configured to extract from only this source. Other lotteries can be loaded by editing the 
