@@ -5,10 +5,9 @@ Small script to query the national and euromillions lottery and alert if the jac
 
 Clone the git repo and install 
 
-`mkvirtualenv lottery -p python2 && pip install -r requirements.txt`
+`mkvirtualenv lottery -p python3 && pip install -r requirements.txt`
 
-The analyser runs on python 2 but few dependancies exist for running in a Python3 Environment
-
+The analyser runs on python 3
 
 ## Running
 To run the lottery analyser, simply run using
@@ -16,10 +15,10 @@ To run the lottery analyser, simply run using
 
 ## Configuration
 
-Configuration for this script exists in the lottery.yaml file. Included is a template yaml file for base config.
+Configuration for this script exists in the lottery.yaml file. Included is a template yaml file for base config to create your own config as the actual lottery.yaml is encrypted.
 
 #### Lottery Extraction
-This script expects to recieve the current webpage for the national lottery and euromillions lotteries and is configured to extract from only this source. Other lotteries can be loaded by editing the 
+This script expects to recieve the current webpage for the national lottery (UK) and euromillions lotteries and is configured to extract from only this source. Other lotteries can be loaded by editing the 
 ```python
 def get_price(self):
 ```
