@@ -4,6 +4,7 @@ import sys
 import requests
 import yaml
 from bs4 import BeautifulSoup
+import re
 
 
 class WebPage(object):
@@ -22,7 +23,10 @@ class WebPage(object):
     def get_price(self):
         price_soup = self.soup.find_all('span', {'class': 'amount'})
         self.price = str(price_soup[0])
-        self.price = self.price[self.price.index('£')+1: self.price.index('£')+6].split('<')[0]
+        priceMatch = re.compile(r'£\d(\.)(\d)+')
+        mo = priceMatch.search(self.price)
+        self.price = mo.group()[1:]
+        print("Price is:\n £{0}".format(self.price))
 
 
 def analyse_lotteries(lotteries):
@@ -61,7 +65,7 @@ def load_lottery(lottery):
     if r.status_code < 300:
         print(r.encoding)
         r.encoding = 'utf8'
-        return(r.content)
+        return r.content
     else:
         print("[ERROR] Failed accessing lottery page:\n {0}".format(r.content))
     return 1
@@ -80,13 +84,14 @@ def push_results(playable, config):
         r = requests.post(url=url, data=payload)
         print(r.text)
 
+
 def run():
     config = load_config()
     lotteries = load_lotteries(config)
     if len(lotteries) > 0:
         playable = analyse_lotteries(lotteries)
-        print(playable)
-        push_results(playable=playable, config=config)
+        # print(playable)
+        # push_results(playable=playable, config=config)
     else:
         print("No lotteries found")
         sys.exit(1)
