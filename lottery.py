@@ -23,10 +23,19 @@ class WebPage(object):
     def get_price(self):
         price_soup = self.soup.find_all('span', {'class': 'amount'})
         self.price = str(price_soup[0])
-        priceMatch = re.compile(r'£\d(\.)(\d)+')
+        priceMatch = re.compile(r'(\d)+(\.)*(\d)*')
         mo = priceMatch.search(self.price)
-        self.price = mo.group()[1:]
-        print("Price is:\n £{0}".format(self.price))
+        print("[INFO]: Analysing {0}".format(self.price))
+        if mo is not None:
+            try:
+                print("[INFO]: mo.group()")
+                print(mo.group())
+            except Exception as e:
+                print("[ERROR]: {0} \n Price: {1}".format(e, self.price))
+            self.price = mo.group()
+            print("Price is:\n £{0}".format(self.price))
+        else:
+            print("No price match found")
 
 
 def analyse_lotteries(lotteries):
